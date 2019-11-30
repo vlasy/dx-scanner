@@ -10,7 +10,7 @@
   "scripts": {
     "build": "rimraf lib && tsc -b",
     "build:watch": "yarn build -w",
-    "lint": "eslint --ext .ts 'src' 'test' 'typings'",
+    "lint": "eslint --ext .ts 'src' 'types'",
     "lint:fix": "yarn lint --fix",
     "prepack": "yarn build",
     "start": "./bin/run",
