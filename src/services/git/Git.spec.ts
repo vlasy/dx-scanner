@@ -18,6 +18,10 @@ describe('Git', () => {
     nock.cleanAll();
   });
 
+  afterEach(() => {
+    nock.restore();
+  });
+
   describe('#exists', () => {
     it('returns true if the file exists', async () => {
       gitHubNock.getFile('mockFile.ts');
@@ -289,7 +293,7 @@ describe('Git', () => {
     });
   });
 
-  describe('#getPullRequestCount', () => {
+  describe.only('#getPullRequestCount', () => {
     it('returns the number of both open and closed pull requests', async () => {
       gitHubNock.getPulls({
         pulls: [

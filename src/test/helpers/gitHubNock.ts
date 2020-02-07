@@ -179,7 +179,9 @@ export class GitHubNock {
   private static get(url: string, params: nock.DataMatcherMap, persist = true): nock.Interceptor {
     const urlObj = new URL(url);
 
+    // console.log('Creating nock in scope', urlObj.origin);
     const scope = nock(urlObj.origin);
+    // const scope = nock(urlObj.origin, { allowUnmocked: true });
     if (persist) {
       scope.persist();
     }

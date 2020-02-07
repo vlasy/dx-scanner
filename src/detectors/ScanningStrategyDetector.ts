@@ -76,6 +76,7 @@ export class ScanningStrategyDetector implements IDetector<string, ScanningStrat
   };
 
   private determineRemoteAccessType = async (remoteService: RemoteService): Promise<AccessType | undefined> => {
+    console.log({ remoteService });
     if (!remoteService.remoteUrl) {
       return undefined;
     }
@@ -86,6 +87,7 @@ export class ScanningStrategyDetector implements IDetector<string, ScanningStrat
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let response: any;
       try {
+        console.log('TRYING', { parsedUrl });
         response = await this.gitHubService.getRepo(parsedUrl.owner, parsedUrl.name);
       } catch (error) {
         this.detectorDebug(error.message);

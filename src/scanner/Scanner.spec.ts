@@ -1,3 +1,4 @@
+import nock from 'nock';
 import { createRootContainer, createTestContainer, TestContainerContext } from '../inversify.config';
 import { Scanner } from './Scanner';
 import { FileSystemService } from '../services/FileSystemService';
@@ -5,16 +6,20 @@ import { argumentsProviderFactory } from '../test/factories/ArgumentsProviderFac
 import { ESLintWithoutErrorsPractice } from '../practices/JavaScript/ESLintWithoutErrorsPractice';
 import { PracticeEvaluationResult, PracticeImpact } from '../model';
 import { ConfigProvider } from './ConfigProvider';
-import { PracticeContext } from '../contexts/practice/PracticeContext';
+import { GitHubService } from '../services';
+const debug = require('debug')('scanner.test');
 
 describe('Scanner', () => {
   let containerCtx: TestContainerContext;
 
   beforeEach(() => {
+    debug('Before each');
     containerCtx = createTestContainer({ uri: '.' });
+    // nock.restore();
   });
 
   afterEach(async () => {
+    debug('After each');
     containerCtx.virtualFileSystemService.clearFileSystem();
     containerCtx.practiceContext.fileInspector!.purgeCache();
   });
@@ -67,10 +72,14 @@ describe('Scanner', () => {
   });
 
   describe('fixer', () => {
-    it('runs fix when fix flag set to true', async () => {
-      jest.setTimeout(20000);
+    it.only('runs fix when fix flag set to true', async () => {
+      debug('Running test');
+      jest.setTimeout(40000);
+      debug('Restoring');
+      nock.restore();
+      debug('Resotred');
       const fixMock = jest.fn();
-      containerCtx = createTestContainer({ fix: true });
+      containerCtx = createTestContainer({ uri: 'github.com/DXHeroes/dx-scanner', fix: true });
       ConfigProvider.prototype.getOverriddenPractice = () => ({
         impact: PracticeImpact.high,
       });
@@ -80,6 +89,7 @@ describe('Scanner', () => {
       containerCtx.container.bind('ESLintWithoutErrorsPractice').to(ESLintWithoutErrorsPractice);
       const scanner = containerCtx.container.get(Scanner);
 
+      containerCtx.container.get(GitHubService)?.purgeCache();
       await scanner.scan({ determineRemote: false });
 
       expect(fixMock).toBeCalled();
@@ -87,7 +97,7 @@ describe('Scanner', () => {
     it('fix settings from config works', async () => {
       jest.setTimeout(15000);
       const fixMock = jest.fn();
-      containerCtx = createTestContainer({ fix: true });
+      containerCtx = createTestContainer({ uri: '.', fix: true });
       ConfigProvider.prototype.getOverriddenPractice = () => ({
         impact: PracticeImpact.high,
         fix: false,
