@@ -23,9 +23,9 @@ jobs:
       shell: powershell.exe
     steps:
       - checkout
-      - node/install-packages:
-          with-cache: false
-          override-ci-command: yarn install
+      - run:
+          command: yarn install
+          name: Install
       - run:
           command: yarn build
           name: Build
