@@ -9,8 +9,14 @@ jobs:
           with-cache: false
           override-ci-command: yarn install
       - run:
-          command: npm run lint
-          name: Run lint
+          command: yarn build
+          name: Build
+      - run:
+          command: yarn test --coverage
+          name: Tests
+      - run:
+          command: yarn lint
+          name: Lint
 
 version: 2.1
 orbs:
