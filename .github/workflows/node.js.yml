@@ -41,12 +41,7 @@ jobs:
           ${{ runner.os }}-node-
     - run: yarn build
   test:
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        node-version: [12.x]
-        os:
-          - ubuntu-latest
+    runs-on: ubuntu-latest
     needs: install
     steps:
     - uses: actions/checkout@v2
@@ -61,12 +56,7 @@ jobs:
     - run: yarn test:codecov:upload
     - run: bin/run run . --fail=high
   linter:
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        node-version: [12.x]
-        os:
-          - ubuntu-latest
+    runs-on: ubuntu-latest
     needs: install
     steps:
       - uses: actions/checkout@v2
@@ -78,32 +68,12 @@ jobs:
             ${{ runner.os }}-node-
       - run: yarn lint
       - run: yarn codecov
-  runtime-linux:
+  runtime-test:
     runs-on:  ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [12.x]
         os:
           - ubuntu-latest
-    needs: [build, test, linter]
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v1
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
-    - run: yarn test --coverage
-    - run: bin/run --help
-    - run: yarn test:codecov:upload
-    - run: bin/run run . --fail=high
-  runtime-windows:
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        node-version: [12.x]
-        os:
           - windows-latest
     needs: [build, test, linter]
     steps:
@@ -119,13 +89,8 @@ jobs:
     - run: yarn test:codecov:upload
     - run: bin/run run . --fail=high
   docker:
-    runs-on:  ${{ matrix.os }}
-    strategy:
-      matrix:
-        node-version: [12.x]
-        os:
-          - ubuntu-latest
-    needs: [runtime-linux, runtime-windows]
+    runs-on: ubuntu-latest
+    needs: runtime-test
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v1
