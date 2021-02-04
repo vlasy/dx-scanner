@@ -1,8 +1,26 @@
 jobs:
-  test:
+  test-linux:
     executor:
       name: node/default
       tag: '12.20'
+    steps:
+      - checkout
+      - node/install-packages:
+          with-cache: false
+          override-ci-command: yarn install
+      - run:
+          command: yarn build
+          name: Build
+      - run:
+          command: yarn test --coverage
+          name: Tests
+      - run:
+          command: yarn lint
+          name: Lint
+  test-windows:
+    executor:
+      name: win/default
+      shell: powershell.exe
     steps:
       - checkout
       - node/install-packages:
@@ -21,9 +39,11 @@ jobs:
 version: 2.1
 orbs:
   node: circleci/node@4.1.0
+  win: circleci/windows@2.2.0
 workflows:
   node-tests:
     jobs:
-      - test
+      - test-linux
+      - test-windows
       
 
