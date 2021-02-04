@@ -84,6 +84,7 @@ jobs:
       - run: yarn codecov
   live-test:
     name: Live tests
+    if: github.ref == 'refs/heads/master' # run only on master
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -107,6 +108,7 @@ jobs:
       - run: dx-scanner run https://github.com/DXHeroes/dx-scanner --fail=off
   docker:
     name: Build and publish Github Action
+    if: github.ref == 'refs/heads/master' # run only on master
     runs-on: ubuntu-latest
     needs: live-test
     steps:
