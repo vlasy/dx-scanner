@@ -7,6 +7,7 @@ jobs:
       - checkout
       - node/install-packages:
           with-cache: false
+          override-ci-command: yarn install
       - run:
           command: npm run lint
           name: Run lint
