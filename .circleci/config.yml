@@ -1,7 +1,22 @@
+jobs:
+  test:
+    executor:
+      name: node/default
+      tag: '13'
+    steps:
+      - checkout
+      - node/install-packages:
+          with-cache: false
+      - run:
+          command: npm run lint
+          name: Run lint
+
 version: 2.1
 orbs:
-  node: circleci/node@3.0.0
+  node: circleci/node@4.1.0
 workflows:
   node-tests:
     jobs:
-      - node/test
+      - test
+      
+
